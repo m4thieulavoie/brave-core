@@ -18,6 +18,8 @@
 #include "third_party/blink/public/mojom/loader/resource_load_info.mojom-shared.h"
 #include "url/gurl.h"
 
+#include "brave/components/brave_shields/common/block_decision.h"
+
 class BraveRequestHandler;
 
 namespace content {
@@ -84,6 +86,9 @@ struct BraveRequestInfo {
   size_t next_url_request_index = 0;
 
   content::BrowserContext* browser_context = nullptr;
+
+  const brave_shields::BlockDecision* block_decision = nullptr;
+
   net::HttpRequestHeaders* headers = nullptr;
   // The following two sets are populated by |OnBeforeStartTransactionCallback|.
   // |set_headers| contains headers which values were added or modified.
@@ -102,6 +107,10 @@ struct BraveRequestInfo {
   bool ShouldMockRequest() const { return !mock_data_url.empty(); }
 
   net::NetworkIsolationKey network_isolation_key = net::NetworkIsolationKey();
+
+  inline bool ShouldMockRequest() const {
+    return !mock_data_url.empty();
+  }
 
   // Default to invalid type for resource_type, so delegate helpers
   // can properly detect that the info couldn't be obtained.

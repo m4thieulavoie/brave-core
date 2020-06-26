@@ -1,0 +1,49 @@
+diff --git a/third_party/blink/renderer/bindings/core/v8/module_record.cc b/third_party/blink/renderer/bindings/core/v8/module_record.cc
+index f6389c8bcd9f1762c73cba217eabf5945d9e25be..ecf2e063270e31e6a972c1129461eee96de15c97 100644
+--- a/third_party/blink/renderer/bindings/core/v8/module_record.cc
++++ b/third_party/blink/renderer/bindings/core/v8/module_record.cc
+@@ -17,6 +17,11 @@
+ #include "third_party/blink/renderer/platform/loader/fetch/script_fetch_options.h"
+ #include "third_party/blink/renderer/platform/weborigin/kurl.h"
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++#include "brave/third_party/blink/brave_page_graph/page_graph.h"
++#include "brave/third_party/blink/brave_page_graph/types.h"
++// #endif
++
+ namespace blink {
+ 
+ // static
+@@ -126,6 +131,23 @@ v8::Local<v8::Module> ModuleRecord::Compile(
+   }
+   DCHECK(!try_catch.HasCaught());
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  {
++    brave_page_graph::PageGraph* page_graph =
++        brave_page_graph::PageGraph::GetFromIsolate(*isolate);
++    if (page_graph != nullptr) {
++      ScriptSourceCode source_code(source);
++      int script_id = module->GetModuleScriptId();
++      if (script_id != 0) {
++        page_graph->RegisterUrlForScriptSource(source_url, ScriptSourceCode(source));
++        page_graph->RegisterScriptCompilation(
++            ScriptSourceCode(source), script_id,
++            brave_page_graph::ScriptType::kScriptTypeModule);
++      }
++    }
++  }
++// #endif
++
+   if (out_produce_cache_data) {
+     *out_produce_cache_data =
+         MakeGarbageCollected<ModuleRecordProduceCacheData>(
+@@ -232,7 +254,7 @@ v8::MaybeLocal<v8::Module> ModuleRecord::ResolveModuleCallback(
+     v8::Local<v8::String> specifier,
+     v8::Local<v8::Module> referrer) {
+   v8::Isolate* isolate = context->GetIsolate();
+-  Modulator* modulator = Modulator::From(ScriptState::From(context));
++  Modulator* modulator = Modulator::From(ScriptState::From(context), nullptr, 0);
+   DCHECK(modulator);
+ 
+   ExceptionState exception_state(isolate, ExceptionState::kExecutionContext,

@@ -1,0 +1,17 @@
+diff --git a/content/browser/renderer_host/render_frame_host_impl.h b/content/browser/renderer_host/render_frame_host_impl.h
+index 7ddd4d26f91fa55935cb075ee918c437a93ad4bc..57643f6c482b3d36197f737f0a45166ab223ee6c 100644
+--- a/content/browser/renderer_host/render_frame_host_impl.h
++++ b/content/browser/renderer_host/render_frame_host_impl.h
+@@ -287,6 +287,12 @@ class CONTENT_EXPORT RenderFrameHostImpl
+   void AddMessageToConsole(blink::mojom::ConsoleMessageLevel level,
+                            const std::string& message) override;
+   void AddInspectorIssue(blink::mojom::InspectorIssueInfoPtr info);
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  void RegisterResourceBlockAd(const GURL& url,
++                               const std::string& rule) override;
++  void RegisterResourceBlockTracker(const GURL& url,
++                                   const std::string& host) override;
++// #endif
+   void ExecuteJavaScript(const base::string16& javascript,
+                          JavaScriptResultCallback callback) override;
+   void ExecuteJavaScriptInIsolatedWorld(const base::string16& javascript,

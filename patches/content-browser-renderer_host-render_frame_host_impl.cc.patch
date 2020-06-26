@@ -1,0 +1,23 @@
+diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/browser/renderer_host/render_frame_host_impl.cc
+index b1ea181a9088bce0422701ac7d3e118b999fec5b..6b7fd5688905ac15fb534ecccd73e95393207d55 100644
+--- a/content/browser/renderer_host/render_frame_host_impl.cc
++++ b/content/browser/renderer_host/render_frame_host_impl.cc
+@@ -1404,6 +1404,18 @@ void RenderFrameHostImpl::AddMessageToConsole(
+   AddMessageToConsoleImpl(level, message, false /* discard_duplicates */);
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++void RenderFrameHostImpl::RegisterResourceBlockAd(const GURL& url,
++                                                  const std::string& rule) {
++  Send(new FrameMsg_RegisterResourceBlockAd(routing_id_, url, rule));
++}
++
++void RenderFrameHostImpl::RegisterResourceBlockTracker(const GURL& url,
++                                                       const std::string& host) {
++  Send(new FrameMsg_RegisterResourceBlockTracker(routing_id_, url, host));
++}
++// #endif
++
+ void RenderFrameHostImpl::ExecuteJavaScript(const base::string16& javascript,
+                                             JavaScriptResultCallback callback) {
+   DCHECK_CURRENTLY_ON(BrowserThread::UI);
