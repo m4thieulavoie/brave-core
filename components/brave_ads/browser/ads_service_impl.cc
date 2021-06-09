@@ -436,31 +436,26 @@ void AdsServiceImpl::GetAccountStatement(GetAccountStatementCallback callback) {
                      std::move(callback)));
 }
 
-void AdsServiceImpl::ToggleAdThumbUp(const std::string& creative_instance_id,
-                                     const std::string& creative_set_id,
-                                     const int action,
+void AdsServiceImpl::ToggleAdThumbUp(const std::string& json,
                                      OnToggleAdThumbUpCallback callback) {
   if (!connected()) {
     return;
   }
 
-  bat_ads_->ToggleAdThumbUp(creative_instance_id, creative_set_id, action,
-                            base::BindOnce(&AdsServiceImpl::OnToggleAdThumbUp,
-                                           AsWeakPtr(), std::move(callback)));
+  bat_ads_->ToggleAdThumbUp(
+      json, base::BindOnce(&AdsServiceImpl::OnToggleAdThumbUp, AsWeakPtr(),
+                           std::move(callback)));
 }
 
-void AdsServiceImpl::ToggleAdThumbDown(const std::string& creative_instance_id,
-                                       const std::string& creative_set_id,
-                                       const int action,
+void AdsServiceImpl::ToggleAdThumbDown(const std::string& json,
                                        OnToggleAdThumbDownCallback callback) {
   if (!connected()) {
     return;
   }
 
   bat_ads_->ToggleAdThumbDown(
-      creative_instance_id, creative_set_id, action,
-      base::BindOnce(&AdsServiceImpl::OnToggleAdThumbDown, AsWeakPtr(),
-                     std::move(callback)));
+      json, base::BindOnce(&AdsServiceImpl::OnToggleAdThumbDown, AsWeakPtr(),
+                           std::move(callback)));
 }
 
 void AdsServiceImpl::ToggleAdOptInAction(
@@ -1242,6 +1237,8 @@ void AdsServiceImpl::OnGetAdsHistory(OnGetAdsHistoryCallback callback,
   base::ListValue list;
   for (const auto& item : ads_history.items) {
     base::DictionaryValue ad_content_dictionary;
+    ad_content_dictionary.SetKey("adType",
+                                 base::Value(item.ad_content.type.value()));
     ad_content_dictionary.SetKey(
         "creativeInstanceId",
         base::Value(item.ad_content.creative_instance_id));
@@ -1326,16 +1323,13 @@ void AdsServiceImpl::OnRemoveAllHistory(const int32_t result) {
 }
 
 void AdsServiceImpl::OnToggleAdThumbUp(OnToggleAdThumbUpCallback callback,
-                                       const std::string& creative_instance_id,
-                                       const int action) {
-  std::move(callback).Run(creative_instance_id, action);
+                                       const std::string& json) {
+  std::move(callback).Run(json);
 }
 
-void AdsServiceImpl::OnToggleAdThumbDown(
-    OnToggleAdThumbDownCallback callback,
-    const std::string& creative_instance_id,
-    const int action) {
-  std::move(callback).Run(creative_instance_id, action);
+void AdsServiceImpl::OnToggleAdThumbDown(OnToggleAdThumbDownCallback callback,
+                                         const std::string& json) {
+  std::move(callback).Run(json);
 }
 
 void AdsServiceImpl::OnToggleAdOptInAction(

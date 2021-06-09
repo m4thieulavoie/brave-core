@@ -79,13 +79,10 @@ WalletInfo Account::GetWallet() const {
   return wallet_->Get();
 }
 
-void Account::SetCatalogIssuers(const CatalogIssuersInfo& catalog_issuers) {
-  confirmations_->SetCatalogIssuers(catalog_issuers);
-}
-
 void Account::Deposit(const std::string& creative_instance_id,
+                      const AdType& ad_type,
                       const ConfirmationType& confirmation_type) {
-  confirmations_->ConfirmAd(creative_instance_id, confirmation_type);
+  confirmations_->ConfirmAd(creative_instance_id, ad_type, confirmation_type);
 }
 
 StatementInfo Account::GetStatement(const int64_t from_timestamp,
@@ -144,13 +141,6 @@ void Account::NotifyWalletRestored(const WalletInfo& wallet) const {
 void Account::NotifyWalletInvalid() const {
   for (AccountObserver& observer : observers_) {
     observer.OnWalletInvalid();
-  }
-}
-
-void Account::NotifyCatalogIssuersChanged(
-    const CatalogIssuersInfo& catalog_issuers) const {
-  for (AccountObserver& observer : observers_) {
-    observer.OnCatalogIssuersChanged(catalog_issuers);
   }
 }
 

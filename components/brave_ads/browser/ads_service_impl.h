@@ -161,13 +161,9 @@ class AdsServiceImpl : public AdsService,
 
   void GetAccountStatement(GetAccountStatementCallback callback) override;
 
-  void ToggleAdThumbUp(const std::string& creative_instance_id,
-                       const std::string& creative_set_id,
-                       const int action,
+  void ToggleAdThumbUp(const std::string& json,
                        OnToggleAdThumbUpCallback callback) override;
-  void ToggleAdThumbDown(const std::string& creative_instance_id,
-                         const std::string& creative_set_id,
-                         const int action,
+  void ToggleAdThumbDown(const std::string& json,
                          OnToggleAdThumbDownCallback callback) override;
   void ToggleAdOptInAction(
       const std::string& category,
@@ -269,11 +265,9 @@ class AdsServiceImpl : public AdsService,
   void OnRemoveAllHistory(const int32_t result);
 
   void OnToggleAdThumbUp(OnToggleAdThumbUpCallback callback,
-                         const std::string& creative_instance_id,
-                         const int action);
+                         const std::string& json);
   void OnToggleAdThumbDown(const OnToggleAdThumbDownCallback callback,
-                           const std::string& creative_instance_id,
-                           const int action);
+                           const std::string& json);
   void OnToggleAdOptInAction(OnToggleAdOptInActionCallback callback,
                              const std::string& category,
                              const int action);
