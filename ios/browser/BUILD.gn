@@ -4,6 +4,7 @@
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import("//brave/components/brave_wallet/common/buildflags/buildflags.gni")
+import("//brave/ios/browser/component_updater/sources.gni")
 import("//build/config/ios/rules.gni")
 import("//ios/build/config.gni")
 
@@ -17,12 +18,15 @@ source_set("browser") {
     "brave_web_main_parts.mm",
   ]
 
+  sources += brave_browser_component_updater_sources
+
   deps = [
     "api/bookmarks",
     "api/bookmarks/exporter",
     "api/bookmarks/importer",
     "api/history",
     "api/sync",
+    "component_updater",
     "metrics",
     "//base",
     "//brave/browser/sync",
@@ -41,6 +45,8 @@ source_set("browser") {
     "//ios/web/public/thread",
     "//ui/base",
   ]
+
+  deps += brave_browser_component_updater_deps
 
   if (brave_wallet_enabled) {
     deps += [ "api/wallet" ]
