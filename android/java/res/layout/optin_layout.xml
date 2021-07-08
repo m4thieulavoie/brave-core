@@ -39,8 +39,8 @@
         android:id="@+id/optin_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="30dp"
         android:paddingHorizontal="30dp"
         android:text="@string/brave_news_optin_subtitle"
         android:textAlignment="center"
@@ -56,6 +56,8 @@
         android:textStyle="normal"
         android:textSize="14sp"
         android:layout_marginHorizontal="60dp"
+        android:paddingHorizontal="30dp"
+        android:textColor="@color/news_text_color"
         android:background="@drawable/news_button_bg"
         android:text="@string/brave_news_optin_button" />
 
@@ -64,7 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="30dp"
         android:paddingHorizontal="30dp"
         android:text="@string/brave_news_optin_learn_more"
         android:textAlignment="center"

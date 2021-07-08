@@ -85,6 +85,7 @@ public class NTPUtil {
     }
 
     public static void updateOrientedUI(Context context, ViewGroup view, Point size) {
+        Log.d("bravenews", "optin click after");
         LinearLayout parentLayout = (LinearLayout)view.findViewById(R.id.parent_layout);
         ViewGroup mainLayout = view.findViewById(R.id.ntp_main_layout);
         NestedScrollView nestedScrollView = (NestedScrollView)view.findViewById(R.id.nestedScrollView);
@@ -95,11 +96,11 @@ public class NTPUtil {
 
         parentLayout.removeView(nestedScrollView);
         // parentLayout.removeView(mainLayout);
-        parentLayout.removeView(imageCreditLayout);
+        // parentLayout.removeView(imageCreditLayout);
 
         parentLayout.addView(nestedScrollView);
         // parentLayout.addView(mainLayout);
-        parentLayout.addView(imageCreditLayout);
+        // parentLayout.addView(imageCreditLayout);
 
         parentLayout.setOrientation(LinearLayout.VERTICAL);
 

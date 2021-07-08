@@ -146,6 +146,8 @@ public class BraveNewTabPageLayout
 
     private ImageView bgImageView;
     private Profile mProfile;
+    private BraveNewTabPageLayout ntpLayout;
+    LinearLayout parentLayout;
 
     private SponsoredTab sponsoredTab;
 
@@ -543,7 +545,7 @@ initNews();
     }
 
     private void initNews() {
-        Log.d("test", "in initNews");
+        Log.d("bravenews", "in initNews");
         recyclerView = findViewById(R.id.newsRecycler);
         container = (LinearLayout) findViewById(R.id.ntp_main_layout);
         nestedScrollView = findViewById(R.id.nestedScrollView);
@@ -551,6 +553,7 @@ initNews();
         optinLayout = findViewById(R.id.optin_layout_id);
         loading = findViewById(R.id.loading);
         loadingView = findViewById(R.id.loading_spinner);
+        parentLayout = (LinearLayout) findViewById(R.id.parent_layout);
 
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
@@ -566,41 +569,38 @@ initNews();
         loadingView.setVisibility(View.GONE);
 
         optinButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.d("test", "optin click");
-                        optinLayout.setVisibility(View.GONE);
-                        loadingView.setVisibility(View.VISIBLE);
+            @Override
+            public void onClick(View v) {
+                Log.d("bravenews", "optin click");
+                optinLayout.setVisibility(View.GONE);
+                loadingView.setVisibility(View.VISIBLE);
 
-                        new Thread( new Runnable() { @Override public void run() {
-                            Log.d("test", "getting feed...");
-                            getFeed();
-                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.d("test", "optin click after");
+                new Thread( new Runnable() { @Override public void run() {
+                    Log.d("bravenews", "getting feed...");
+                    getFeed();
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("bravenews", "optin click after");
 
-                                    loadingView.setVisibility(View.GONE);
+                            loadingView.setVisibility(View.GONE);
 
-                                    container.setVisibility(View.VISIBLE);
-                                    recyclerView.setVisibility(View.VISIBLE);
-                                    // nestedScrollView.setVisibility(View.VISIBLE);
-                                    // preferences.setOptIn(true);
-                                    adapter.notifyDataSetChanged();
-                                }
-                            }, 1000);
-
-                        } } ).start();
-
-
-                    }
-                });
+                            container.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                            // nestedScrollView.setVisibility(View.VISIBLE);
+                            // preferences.setOptIn(true);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }, 1000);
+                } } ).start();
+            }
+        });
     }
 
     private void getFeed() {
         BraveNewsUtils utils = new BraveNewsUtils(mActivity);
         newsItems = utils.parseJson(newsItems);
-        Log.d("test", "end parse");
+        Log.d("bravenews", "end parse");
     }
 
     @Override
@@ -691,6 +691,7 @@ initNews();
 
     private void setBackgroundImage(NTPImage ntpImage) {
         bgImageView = (ImageView) findViewById(R.id.bg_image_view);
+        ntpLayout = (BraveNewTabPageLayout) findViewById(R.id.ntp_content);
         bgImageView.setScaleType(ImageView.ScaleType.MATRIX);
 
         ViewTreeObserver observer = bgImageView.getViewTreeObserver();
@@ -794,7 +795,15 @@ initNews();
     private FetchWallpaperWorkerTask.WallpaperRetrievedCallback wallpaperRetrievedCallback = new FetchWallpaperWorkerTask.WallpaperRetrievedCallback() {
         @Override
         public void bgWallpaperRetrieved(Bitmap bgWallpaper) {
-            bgImageView.setImageBitmap(bgWallpaper);
+
+            // bgImageView.setImageBitmap(bgWallpaper);
+            // ntpLayout.setBackground(new BitmapDrawable(bgWallpaper));
+            parentLayout.setBackground(new BitmapDrawable(bgWallpaper));
+            // bgImageView.setVisibility(View.GONE);
+            // BitmapDrawable bitmapDrawable = new BitmapDrawable(bgWallpaper);
+            // bitmapDrawable.setGravity(Gravity.BOTTOM|Gravity.RIGHT);
+            // bitmapDrawable.setGravity(Gravity.CENTER);
+            // container.setBackgroundDrawable(bitmapDrawable);
         }
 
         @Override
@@ -1099,16 +1108,16 @@ initNews();
 
     @Override
     public void onCloseClick(View view) {
-        Log.d("Test", "close click");
+        Log.d("bravenews", "close click");
     }
     
     @Override
     public void onOptInClick(View view) {
-        Log.d("Test", "optin click");
+        Log.d("bravenews", "optin click");
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Log.d("test", "You clicked " + adapter.getItem(position) + " on row number " + position);
+        Log.d("bravenews", "You clicked " + adapter.getItem(position) + " on row number " + position);
     }    
 }
