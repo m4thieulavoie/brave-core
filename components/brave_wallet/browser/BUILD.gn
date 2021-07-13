@@ -87,6 +87,7 @@ static_library("browser") {
     "//services/network/public/cpp",
     "//third_party/abseil-cpp:absl",
     "//third_party/boringssl",
+    "//third_party/re2",
     "//url",
   ]
 }
