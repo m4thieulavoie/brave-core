@@ -5,19 +5,58 @@
 
 #include "components/permissions/request_type.h"
 
-#define BRAVE_GET_ICON_ID_DESKTOP \
-  case RequestType::kWidevine:    \
+#include "brave/components/brave_wallet/common/buildflags/buildflags.h"
+#include "third_party/widevine/cdm/buildflags.h"
+
+#define BRAVE_GET_ICON_ID_DESKTOP   \
+  case RequestType::kWidevine:      \
+  case RequestType::kBraveEthereum: \
     return vector_icons::kExtensionIcon;
 
 #if BUILDFLAG(ENABLE_WIDEVINE)
-#define BRAVE_PERMISSION_KEY_FOR_REQUEST_TYPE \
-  case permissions::RequestType::kWidevine:   \
+#define CASE_WIDEVINE                       \
+  case permissions::RequestType::kWidevine: \
     return "widevine";
 #else
-#define BRAVE_PERMISSION_KEY_FOR_REQUEST_TYPE
+#define CASE_WIDEVINE
 #endif
+
+#if BUILDFLAG(BRAVE_WALLET_ENABLED)
+#define CASE_BRAVE_ETHEREUM                      \
+  case permissions::RequestType::kBraveEthereum: \
+    return "brave_ethereum";
+#else
+#define CASE_BRAVE_ETHEREUM
+#endif
+
+#define BRAVE_PERMISSION_KEY_FOR_REQUEST_TYPE \
+  CASE_WIDEVINE                               \
+  CASE_BRAVE_ETHEREUM
+
+#define ContentSettingsTypeToRequestType \
+  ContentSettingsTypeToRequestType_ChromiumImpl
 
 #include "../../../../components/permissions/request_type.cc"
 
-#undef BRAVE_PERMISSION_KEY_FOR_REQUEST_TYPE
 #undef BRAVE_GET_ICON_ID_DESKTOP
+#undef BRAVE_PERMISSION_KEY_FOR_REQUEST_TYPE
+#undef CASE_WIDEVINE
+#undef CASE_BRAVE_ETHEREUM
+#undef ContentSettingsTypeToRequestType
+
+namespace permissions {
+
+RequestType ContentSettingsTypeToRequestType(
+    ContentSettingsType content_settings_type) {
+  switch (content_settings_type) {
+#if BUILDFLAG(BRAVE_WALLET_ENABLED)
+    case ContentSettingsType::BRAVE_ETHEREUM:
+      return RequestType::kBraveEthereum;
+#endif
+    default:
+      return ContentSettingsTypeToRequestType_ChromiumImpl(
+          content_settings_type);
+  }
+}
+
+}  // namespace permissions
