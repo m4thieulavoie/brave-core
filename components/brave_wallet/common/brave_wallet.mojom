@@ -42,6 +42,9 @@ interface PanelHandler {
 
   // Notify the backend that the dialog should be closed.
   CloseUI();
+
+  ConnectToSite(array<string> accounts, string origin, int32 tab_id);
+  CancelConnectToSite(string origin, int32 tab_id);
 };
 
 // Browser-side handler for requests from WebUI page.
@@ -129,4 +132,7 @@ interface WalletHandler {
 
 // WebUI-side handler for requests from the browser.
 interface Page {
+  ShowConnectToSiteUI(int32 tab_id,
+                      array<string> accounts,
+                      string origin);
 };
