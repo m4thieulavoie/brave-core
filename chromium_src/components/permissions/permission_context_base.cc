@@ -4,10 +4,15 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "components/permissions/permission_context_base.h"
+#include "components/permissions/permissions_client.h"
 
 #define PermissionContextBase PermissionContextBase_ChromiumImpl
+#define CanBypassEmbeddingOriginCheck(REQUESTING_ORIGIN, EMBEDDING_ORIGIN) \
+  BraveCanBypassEmbeddingOriginCheck(REQUESTING_ORIGIN, EMBEDDING_ORIGIN,  \
+                                     content_settings_type_)
 #include "../../../../components/permissions/permission_context_base.cc"
 #undef PermissionContextBase
+#undef CanBypassEmbeddingOriginCheck
 
 #include "brave/components/permissions/permission_lifetime_manager.h"
 
