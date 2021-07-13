@@ -56,6 +56,8 @@ class PermissionContextBase : public PermissionContextBase_ChromiumImpl {
                         bool user_gesture,
                         BrowserPermissionCallback callback) override;
 
+  bool IsPendingEthereumRequestsEmptyForTesting();
+
  private:
   /**
    * This class is map to one PermissionManager::RequestPermissions request,

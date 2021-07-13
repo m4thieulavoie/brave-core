@@ -126,4 +126,8 @@ void PermissionContextBase::EthereumPermissionRequests::RequestFinished() {
   finished_request_count_++;
 }
 
+bool PermissionContextBase::IsPendingEthereumRequestsEmptyForTesting() {
+  return ethereum_pending_requests_.empty();
+}
+
 }  // namespace permissions
