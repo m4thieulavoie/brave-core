@@ -127,8 +127,6 @@ void WalletButton::ShowWalletPermissionBubble(
     if (!brave_wallet::ParseRequestingOrigin(request->GetOrigin(),
                                              true /* sub_req_format */,
                                              &requesting_origin, &account)) {
-      LOG(ERROR) << "Not a valid requesting origin: "
-                 << request->GetOrigin().spec();
       continue;
     }
     accounts.push_back(account);

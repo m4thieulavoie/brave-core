@@ -38,7 +38,7 @@ class WalletButton : public ToolbarButton, public views::WidgetObserver {
   void CloseWalletBubble();
   void ShowWalletPermissionBubble(
       content::WebContents* web_contents,
-      permissions::PermissionPrompt::Delegate* delegate = nullptr);
+      permissions::PermissionPrompt::Delegate* delegate);
 
   void UpdateImageAndText();
   void InitBubbleManagerAnchor();

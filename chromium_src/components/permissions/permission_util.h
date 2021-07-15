@@ -7,18 +7,8 @@
 #define BRAVE_CHROMIUM_SRC_COMPONENTS_PERMISSIONS_PERMISSION_UTIL_H_
 
 #define PermissionUtil PermissionUtil_ChromiumImpl
-/*
-#define GetPermissionString GetPermissionString_ChromiumImpl
-#define GetPermissionType GetPermissionType_ChromiumImpl
-#define IsPermission IsPermission_ChromiumImpl
-*/
 #include "../../../../components/permissions/permission_util.h"
 #undef PermissionUtil
-/*
-#undef GetPermissionString
-#undef GetPermissionType
-#undef IsPermission
-*/
 
 namespace permissions {
 
