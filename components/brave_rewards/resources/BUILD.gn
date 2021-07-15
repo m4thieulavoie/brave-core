@@ -7,6 +7,7 @@ import("//tools/grit/repack.gni")
 pack_web_resources("page_generated_resources") {
   resource_name = "brave_rewards_page"
   output_dir = "$root_gen_dir/brave/components/brave_rewards/resources"
+
   # need webpack and GRD generation first
   if (is_android) {
     deps = [ "android_page" ]
@@ -18,19 +19,17 @@ pack_web_resources("page_generated_resources") {
 pack_web_resources("internals_generated_resources") {
   resource_name = "brave_rewards_internals"
   output_dir = "$root_gen_dir/brave/components/brave_rewards/resources"
+
   # need webpack and GRD generation first
-  deps = [
-    "internals"
-  ]
+  deps = [ "internals" ]
 }
 
 pack_web_resources("tip_generated_resources") {
   resource_name = "brave_rewards_tip"
   output_dir = "$root_gen_dir/brave/components/brave_rewards/resources"
+
   # need webpack and GRD generation first
-  deps = [
-    "tip"
-  ]
+  deps = [ "tip" ]
 }
 
 grit("static_resources") {
@@ -41,8 +40,7 @@ grit("static_resources") {
     "brave_rewards_static.pak",
   ]
 
-  deps = [
-  ]
+  deps = []
 
   grit_flags = [
     "-E",
@@ -54,22 +52,30 @@ grit("static_resources") {
   output_dir = "$root_gen_dir/brave/components/brave_rewards/resources"
 }
 
+# TODO(zenparsing): What is this repack thing about?
 repack("resources") {
   public_deps = [
-    ":page_generated_resources",
     ":internals_generated_resources",
+    ":page_generated_resources",
     ":static_resources",
   ]
 
   sources = [
-    "$root_gen_dir/brave/components/brave_rewards/resources/brave_rewards_page_generated.pak",
     "$root_gen_dir/brave/components/brave_rewards/resources/brave_rewards_internals_generated.pak",
+    "$root_gen_dir/brave/components/brave_rewards/resources/brave_rewards_page_generated.pak",
     "$root_gen_dir/brave/components/brave_rewards/resources/brave_rewards_static.pak",
   ]
 
   if (!is_android) {
-    sources += [ "$root_gen_dir/brave/components/brave_rewards/resources/brave_rewards_tip_generated.pak" ]
-    public_deps += [ ":tip_generated_resources" ]
+    sources += [
+      "$root_gen_dir/brave/components/brave_rewards/resources/brave_rewards_panel_new_generated.pak",
+      "$root_gen_dir/brave/components/brave_rewards/resources/brave_rewards_tip_generated.pak",
+    ]
+
+    public_deps += [
+      ":tip_generated_resources",
+      "rewards_panel:brave_rewards_panel_new_generated",
+    ]
   }
 
   output = "$root_gen_dir/brave/components/brave_rewards/resources/brave_rewards_resources.pak"

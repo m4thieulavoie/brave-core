@@ -26,7 +26,7 @@
 #include "ui/views/view.h"
 
 #if BUILDFLAG(BRAVE_REWARDS_ENABLED)
-#include "brave/browser/ui/views/brave_actions/brave_rewards_action_stub_view.h"
+#include "brave/browser/ui/views/brave_actions/brave_rewards_panel_button.h"
 #endif
 
 class BraveActionViewController;
@@ -48,53 +48,41 @@ class BraveActionsContainer : public views::View,
                               public extensions::BraveActionAPI::Observer,
                               public extensions::ExtensionActionAPI::Observer,
                               public extensions::ExtensionRegistryObserver,
-                              public ToolbarActionView::Delegate,
-#if BUILDFLAG(BRAVE_REWARDS_ENABLED)
-                              public BraveRewardsActionStubView::Delegate
-#endif
-                              {
+                              public ToolbarActionView::Delegate {
  public:
   BraveActionsContainer(Browser* browser, Profile* profile);
   ~BraveActionsContainer() override;
   void Init();
   void Update();
   void SetShouldHide(bool should_hide);
+
   // ToolbarActionView::Delegate
-  content::WebContents* GetCurrentWebContents() override;
-  // Returns the view of the toolbar actions overflow menu to use as a
-  // reference point for a popup when this view isn't visible.
-  views::LabelButton* GetOverflowReferenceView() const override;
-  // Returns the preferred size of the ToolbarActionView.
   gfx::Size GetToolbarActionSize() override;
-  // Overridden from views::DragController (required by
-  // ToolbarActionView::Delegate):
+
+  content::WebContents* GetCurrentWebContents() override;
+
+  views::LabelButton* GetOverflowReferenceView() const override;
+
+  // views::DragController:
   void WriteDragDataForView(View* sender,
                             const gfx::Point& press_pt,
                             ui::OSExchangeData* data) override;
+
   int GetDragOperationsForView(View* sender, const gfx::Point& p) override;
+
   bool CanStartDragForView(View* sender,
                            const gfx::Point& press_pt,
                            const gfx::Point& p) override;
 
-#if BUILDFLAG(BRAVE_REWARDS_ENABLED)
-  // BraveRewardsActionStubView::Delegate
-  void OnRewardsStubButtonClicked() override;
-#endif
-
   // ExtensionRegistryObserver:
   void OnExtensionLoaded(content::BrowserContext* browser_context,
                          const extensions::Extension* extension) override;
+
   void OnExtensionUnloaded(content::BrowserContext* browser_context,
                            const extensions::Extension* extension,
                            extensions::UnloadedExtensionReason reason) override;
 
-  // ExtensionActionAPI::Observer
-  // Called when there is a change to the given |extension_action|.
-  // |web_contents| is the web contents that was affected, and
-  // |browser_context| is the associated BrowserContext. (The latter is
-  // included because ExtensionActionAPI is shared between normal and
-  // incognito contexts, so |browser_context| may not equal
-  // |browser_context_|.)
+  // ExtensionActionAPI::Observer:
   void OnExtensionActionUpdated(
       extensions::ExtensionAction* extension_action,
       content::WebContents* web_contents,
@@ -121,6 +109,7 @@ class BraveActionsContainer : public views::View,
   struct BraveActionInfo {
     BraveActionInfo();
     ~BraveActionInfo();
+
     // Reset view and view controller
     void Reset();
 
@@ -143,7 +132,7 @@ class BraveActionsContainer : public views::View,
   void ShowAction(const std::string& id, bool show);
   bool IsActionShown(const std::string& id) const;
   void UpdateActionState(const std::string& id);
-  void AttachAction(BraveActionInfo &action);
+  void AttachAction(BraveActionInfo* action);
 
   // BraveActionAPI::Observer
   void OnBraveActionShouldTrigger(const std::string& extension_id,
