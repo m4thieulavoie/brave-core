@@ -8,6 +8,12 @@
 #include "brave/components/brave_wallet/common/buildflags/buildflags.h"
 #include "third_party/widevine/cdm/buildflags.h"
 
+// TODO(jocelyn): Might need to update icon when we have ethereum.enable UI
+// support in Android.
+#define BRAVE_GET_ICON_ID_ANDROID   \
+  case RequestType::kBraveEthereum: \
+    return IDR_ANDROID_INFOBAR_PERMISSION_COOKIE;
+
 #define BRAVE_GET_ICON_ID_DESKTOP   \
   case RequestType::kWidevine:      \
   case RequestType::kBraveEthereum: \
@@ -38,6 +44,7 @@
 
 #include "../../../../components/permissions/request_type.cc"
 
+#undef BRAVE_GET_ICON_ID_ANDROID
 #undef BRAVE_GET_ICON_ID_DESKTOP
 #undef BRAVE_PERMISSION_KEY_FOR_REQUEST_TYPE
 #undef CASE_WIDEVINE
