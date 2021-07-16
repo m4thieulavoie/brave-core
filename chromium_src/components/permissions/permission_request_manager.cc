@@ -66,7 +66,7 @@ void PermissionRequestManager::AcceptEthereumPermissionRequests(
   // TODO(jocelyn): This does not have any bad impact atm if we finalize all
   // requests with GRANTED option in the situation that some sub-requests are
   // not granted, but we need to take a deeper look to see how we can finalize
-  // requests with different actionos.
+  // requests with different actions.
   FinalizeCurrentRequests(PermissionAction::GRANTED);
 }
 

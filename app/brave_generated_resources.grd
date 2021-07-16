@@ -245,10 +245,10 @@ By installing this extension, you are agreeing to the Google Widevine Terms of U
         Ethereum
       </message>
       <message name="IDS_SETTINGS_SITE_SETTINGS_ETHEREUM_ASK" desc="Label for ethereum site settings.">
-        Ask when a site wants to access Ethereum provider API
+        Ask when a site wants to access the Ethereum provider API
       </message>
       <message name="IDS_SETTINGS_SITE_SETTINGS_ETHEREUM_BLOCK" desc="Label for ethereum site settings.">
-        Block sites from accessing Ethereum provider API
+        Block sites from accessing the Ethereum provider API
       </message>
       <!-- Extensions -->
       <message name="IDS_UNVETTED_EXTENSION_INSTALL_PROMPT_TITLE" desc="Titlebar of the extension or app installation prompt which was not vetted by Brave. Asks the user if they want to install a particular extension or app.">

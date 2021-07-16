@@ -56,15 +56,18 @@ RegisterPolymerComponentBehaviors({
             }
             lists_.permissionsAdvanced.splice(indexForAutoplay, 0, autoplayItem)
             let indexForEthereum = indexForAutoplay + 1
-            const ethereumItem = {
-              route: routes.SITE_SETTINGS_ETHEREUM,
-              id: 'ethereum',
-              label: 'siteSettingsEthereum',
-              icon: 'cr:extension',
-              enabledLabel: 'siteSettingsEthereumAsk',
-              disabledLabel: 'siteSettingsEthereumBlock'
+            const isNativeBraveWalletEnabled = loadTimeData.getBoolean('isNativeBraveWalletFeatureEnabled')
+            if (isNativeBraveWalletEnabled) {
+              const ethereumItem = {
+                route: routes.SITE_SETTINGS_ETHEREUM,
+                id: 'ethereum',
+                label: 'siteSettingsEthereum',
+                icon: 'cr:extension',
+                enabledLabel: 'siteSettingsEthereumAsk',
+                disabledLabel: 'siteSettingsEthereumBlock'
+              }
+              lists_.permissionsAdvanced.splice(indexForEthereum, 0, ethereumItem)
             }
-            lists_.permissionsAdvanced.splice(indexForEthereum, 0, ethereumItem)
           }
         }
         return lists_
