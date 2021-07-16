@@ -32,8 +32,8 @@ bool IsAccepted(PermissionRequest* request,
 
 }  // namespace
 
-
-bool PermissionRequestManager::ShouldGroupRequests(PermissionRequest* a, PermissionRequest* b) {
+bool PermissionRequestManager::ShouldGroupRequests(PermissionRequest* a,
+                                                   PermissionRequest* b) {
   std::string origin_a;
   std::string origin_b;
   if (a->GetRequestType() == RequestType::kBraveEthereum &&
