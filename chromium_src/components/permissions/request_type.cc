@@ -13,7 +13,8 @@
 #endif
 
 #if defined(OS_ANDROID)
-constexpr auto kAndroidInfobarPermissionCookie = IDR_ANDROID_INFOBAR_PERMISSION_COOKIE;
+constexpr auto kAndroidInfobarPermissionCookie =
+    IDR_ANDROID_INFOBAR_PERMISSION_COOKIE;
 #else
 namespace vector_icons {
 constexpr auto& kMicIconValue = vector_icons::kMicIcon;
@@ -21,21 +22,28 @@ constexpr auto& kMicIconValue = vector_icons::kMicIcon;
 #endif
 
 // Add Brave cases into GetIconIdAndroid.
+// kWidevine is not expected to happen here as Widevine is not enabled in
+// Android, we add this case here just to avoid build error due to unhandled
+// cases in the switch.
+//
 // TODO(jocelyn): Might need to update icon when we have ethereum.enable UI
 // support in Android.
-#define IDR_ANDROID_INFOBAR_PERMISSION_COOKIE kAndroidInfobarPermissionCookie; \
-  case RequestType::kBraveEthereum: \
+#define IDR_ANDROID_INFOBAR_PERMISSION_COOKIE \
+  kAndroidInfobarPermissionCookie;            \
+  case RequestType::kWidevine:                \
+  case RequestType::kBraveEthereum:           \
     return IDR_ANDROID_INFOBAR_PERMISSION_COOKIE
 
 // Add Brave cases into GetIconIdDesktop.
-#define kMicIcon kMicIconValue; \
+#define kMicIcon                    \
+  kMicIconValue;                    \
   case RequestType::kWidevine:      \
   case RequestType::kBraveEthereum: \
     return vector_icons::kExtensionIcon
 
-#define BRAVE_PERMISSION_KEY_FOR_REQUEST_TYPE \
-  case permissions::RequestType::kWidevine: \
-    return "widevine"; \
+#define BRAVE_PERMISSION_KEY_FOR_REQUEST_TYPE    \
+  case permissions::RequestType::kWidevine:      \
+    return "widevine";                           \
   case permissions::RequestType::kBraveEthereum: \
     return "brave_ethereum";
 
@@ -54,10 +62,8 @@ namespace permissions {
 RequestType ContentSettingsTypeToRequestType(
     ContentSettingsType content_settings_type) {
   switch (content_settings_type) {
-#if BUILDFLAG(BRAVE_WALLET_ENABLED)
     case ContentSettingsType::BRAVE_ETHEREUM:
       return RequestType::kBraveEthereum;
-#endif
     default:
       return ContentSettingsTypeToRequestType_ChromiumImpl(
           content_settings_type);
