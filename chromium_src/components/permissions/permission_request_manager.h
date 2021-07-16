@@ -9,14 +9,16 @@
 #include "brave/components/brave_wallet/common/buildflags/buildflags.h"
 
 #if BUILDFLAG(BRAVE_WALLET_ENABLED)
-#define BRAVE_PERMISSION_REQUEST_MANAGER_H_                               \
-  void AcceptEthereumPermissionRequests(const std::vector<std::string>&); \
-  void IgnoreEthereumPermissionRequests();
-#else
-#define BRAVE_PERMISSION_REQUEST_MANAGER_H_
+#define set_view_factory_for_testing                                 \
+  AcceptEthereumPermissionRequests(const std::vector<std::string>&); \
+  void IgnoreEthereumPermissionRequests();                           \
+  void set_view_factory_for_testing
 #endif  // BUILDFLAG(BRAVE_WALLET_ENABLED)
 
 #include "../../../../components/permissions/permission_request_manager.h"
-#undef BRAVE_PERMISSION_REQUEST_MANAGER_H_
+
+#if BUILDFLAG(BRAVE_WALLET_ENABLED)
+#undef set_view_factory_for_testing
+#endif
 
 #endif  // BRAVE_CHROMIUM_SRC_COMPONENTS_PERMISSIONS_PERMISSION_REQUEST_MANAGER_H_

@@ -30,6 +30,12 @@ KeyedService* PermissionManagerFactory::BuildServiceInstanceFor(
     content::BrowserContext* context) const {
   Profile* profile = Profile::FromBrowserContext(context);
   auto permission_contexts = CreatePermissionContexts(profile);
+
+#if BUILDFLAG(BRAVE_WALLET_ENABLED)
+  permission_contexts[ContentSettingsType::BRAVE_ETHEREUM] =
+      std::make_unique<permissions::BraveEthereumPermissionContext>(profile);
+#endif
+
   if (base::FeatureList::IsEnabled(
           permissions::features::kPermissionLifetime)) {
     auto factory =
@@ -38,11 +44,6 @@ KeyedService* PermissionManagerFactory::BuildServiceInstanceFor(
       permission_context.second->SetPermissionLifetimeManagerFactory(factory);
     }
   }
-
-#if BUILDFLAG(BRAVE_WALLET_ENABLED)
-  permission_contexts[ContentSettingsType::BRAVE_ETHEREUM] =
-      std::make_unique<permissions::BraveEthereumPermissionContext>(profile);
-#endif
 
   return new permissions::BravePermissionManager(
       profile, std::move(permission_contexts));

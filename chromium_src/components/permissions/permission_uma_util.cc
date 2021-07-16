@@ -6,6 +6,7 @@
 #include "components/permissions/permission_uma_util.h"
 
 #include "brave/components/brave_wallet/common/buildflags/buildflags.h"
+#include "components/permissions/permissions_client.h"
 #include "build/build_config.h"
 #include "third_party/widevine/cdm/buildflags.h"
 
@@ -30,12 +31,19 @@
   CASE_WIDEVINE                              \
   CASE_BRAVE_ETHEREUM
 
-#define BRAVE_RECORD_PERMISSION_ACTION      \
-  case ContentSettingsType::BRAVE_ETHEREUM: \
-    break;
+
+// We do not record permissions UKM and this can save us from patching
+// in RecordPermissionAction for unhandling switch cases for Brave's content
+// settings type.
+#define GetUkmSourceId \
+  GetSettingsMap(browser_context); \
+  if (true)                        \
+    return;                        \
+  PermissionsClient::Get()->GetUkmSourceId
+
 
 #include "../../../../components/permissions/permission_uma_util.cc"
 #undef CASE_WIDEVINE
 #undef CASE_BRAVE_ETHEREUM
 #undef BRAVE_GET_UMA_VALUE_FOR_REQUEST_TYPE
-#undef BRAVE_RECORD_PERMISSION_ACTION
+#undef GetUkmSourceId

@@ -3,18 +3,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "components/permissions/permissions_client.h"
-
-#define PermissionsClient PermissionsClient_ChromiumImpl
 #include "../../../../components/permissions/permissions_client.cc"
-#undef PermissionsClient
 
 namespace permissions {
 
-// static
-PermissionsClient* PermissionsClient::Get() {
-  DCHECK(g_client);
-  return static_cast<PermissionsClient*>(g_client);
+bool PermissionsClient::BraveCanBypassEmbeddingOriginCheck(
+    const GURL& requesting_origin,
+    const GURL& embedding_origin,
+    ContentSettingsType type) {
+  return CanBypassEmbeddingOriginCheck(requesting_origin, embedding_origin);
 }
 
 }  // namespace permissions

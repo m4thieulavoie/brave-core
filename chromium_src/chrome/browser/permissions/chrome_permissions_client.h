@@ -6,13 +6,15 @@
 #ifndef BRAVE_CHROMIUM_SRC_CHROME_BROWSER_PERMISSIONS_CHROME_PERMISSIONS_CLIENT_H_
 #define BRAVE_CHROMIUM_SRC_CHROME_BROWSER_PERMISSIONS_CHROME_PERMISSIONS_CLIENT_H_
 
-#define BRAVE_CHROME_PERMISSIONS_CLIENT_H_                               \
-  bool BraveCanBypassEmbeddingOriginCheck(const GURL& requesting_origin, \
-                                          const GURL& embedding_origin,  \
-                                          ContentSettingsType type) override;
+#include "components/permissions/permissions_client.h"
+
+#define CanBypassEmbeddingOriginCheck                                    \
+  BraveCanBypassEmbeddingOriginCheck(const GURL& requesting_origin,      \
+                                     const GURL& embedding_origin,       \
+                                     ContentSettingsType type) override; \
+  bool CanBypassEmbeddingOriginCheck
 
 #include "../../../../../chrome/browser/permissions/chrome_permissions_client.h"
-
-#undef BRAVE_CHROME_PERMISSIONS_CLIENT_H_
+#undef CanBypassEmbeddingOriginCheck
 
 #endif  // BRAVE_CHROMIUM_SRC_CHROME_BROWSER_PERMISSIONS_CHROME_PERMISSIONS_CLIENT_H_
