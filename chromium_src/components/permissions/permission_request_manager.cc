@@ -6,47 +6,17 @@
 #include <string>
 
 #include "brave/components/brave_wallet/common/buildflags/buildflags.h"
-#include "components/permissions/permission_request.h"
 
 #if BUILDFLAG(BRAVE_WALLET_ENABLED)
 #include "brave/components/brave_wallet/browser/ethereum_permission_utils.h"
-
-namespace permissions {
-namespace {
-bool BraveShouldGroupRequests(PermissionRequest* a, PermissionRequest* b);
-}  // namespace
-}  // namespace permissions
-
-#define BRAVE_SHOULD_GROUP_REQUESTS   \
-  if (BraveShouldGroupRequests(a, b)) \
-    return true;
-#else
-#define BRAVE_SHOULD_GROUP_REQUESTS
 #endif  // BUILDFLAG(BRAVE_WALLET_ENABLED)
 
 #include "../../../../components/permissions/permission_request_manager.cc"
-#undef BRAVE_SHOULD_GROUP_REQUESTS
 
 #if BUILDFLAG(BRAVE_WALLET_ENABLED)
 namespace permissions {
 
 namespace {
-
-bool BraveShouldGroupRequests(PermissionRequest* a, PermissionRequest* b) {
-  std::string origin_a;
-  std::string origin_b;
-  if (a->GetRequestType() == RequestType::kBraveEthereum &&
-      b->GetRequestType() == RequestType::kBraveEthereum &&
-      brave_wallet::ParseRequestingOrigin(a->GetOrigin(), true, &origin_a,
-                                          nullptr) &&
-      brave_wallet::ParseRequestingOrigin(b->GetOrigin(), true, &origin_b,
-                                          nullptr) &&
-      origin_a == origin_b) {
-    return true;
-  }
-
-  return false;
-}
 
 bool IsAccepted(PermissionRequest* request,
                 const std::vector<std::string>& accounts) {
@@ -61,6 +31,23 @@ bool IsAccepted(PermissionRequest* request,
 }
 
 }  // namespace
+
+
+bool PermissionRequestManager::ShouldGroupRequests(PermissionRequest* a, PermissionRequest* b) {
+  std::string origin_a;
+  std::string origin_b;
+  if (a->GetRequestType() == RequestType::kBraveEthereum &&
+      b->GetRequestType() == RequestType::kBraveEthereum &&
+      brave_wallet::ParseRequestingOrigin(a->GetOrigin(), true, &origin_a,
+                                          nullptr) &&
+      brave_wallet::ParseRequestingOrigin(b->GetOrigin(), true, &origin_b,
+                                          nullptr) &&
+      origin_a == origin_b) {
+    return true;
+  }
+
+  return ::permissions::ShouldGroupRequests(a, b);
+}
 
 void PermissionRequestManager::AcceptEthereumPermissionRequests(
     const std::vector<std::string>& accounts) {

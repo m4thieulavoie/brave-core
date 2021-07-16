@@ -9,9 +9,10 @@
 #include "brave/components/brave_wallet/common/buildflags/buildflags.h"
 
 #if BUILDFLAG(BRAVE_WALLET_ENABLED)
-#define set_view_factory_for_testing                                 \
-  AcceptEthereumPermissionRequests(const std::vector<std::string>&); \
-  void IgnoreEthereumPermissionRequests();                           \
+#define set_view_factory_for_testing                                    \
+  AcceptEthereumPermissionRequests(const std::vector<std::string>&);    \
+  void IgnoreEthereumPermissionRequests();                              \
+  bool ShouldGroupRequests(PermissionRequest* a, PermissionRequest* b); \
   void set_view_factory_for_testing
 #endif  // BUILDFLAG(BRAVE_WALLET_ENABLED)
 

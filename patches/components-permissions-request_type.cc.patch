@@ -1,24 +1,8 @@
 diff --git a/components/permissions/request_type.cc b/components/permissions/request_type.cc
-index 7e70c3b195ed2daa118dab140e6323e94b81e8d8..1d93e20a14e55134551054a63d10592edc50cb2f 100644
+index 7e70c3b195ed2daa118dab140e6323e94b81e8d8..ec1756b47338be4de0cddd79a6fc0ed96b97fe64 100644
 --- a/components/permissions/request_type.cc
 +++ b/components/permissions/request_type.cc
-@@ -54,6 +54,7 @@ int GetIconIdAndroid(RequestType type) {
-       return IDR_ANDROID_INFOBAR_PROTECTED_MEDIA_IDENTIFIER;
-     case RequestType::kStorageAccess:
-       return IDR_ANDROID_INFOBAR_PERMISSION_COOKIE;
-+    BRAVE_GET_ICON_ID_ANDROID
-   }
-   NOTREACHED();
-   return 0;
-@@ -105,6 +106,7 @@ const gfx::VectorIcon& GetIconIdDesktop(RequestType type) {
-       return vector_icons::kCookieIcon;
-     case RequestType::kWindowPlacement:
-       return vector_icons::kSelectWindowIcon;
-+    BRAVE_GET_ICON_ID_DESKTOP
-   }
-   NOTREACHED();
-   return gfx::kNoneIcon;
-@@ -235,6 +237,7 @@ const char* PermissionKeyForRequestType(permissions::RequestType request_type) {
+@@ -235,6 +235,7 @@ const char* PermissionKeyForRequestType(permissions::RequestType request_type) {
      case permissions::RequestType::kWindowPlacement:
        return "window_placement";
  #endif
