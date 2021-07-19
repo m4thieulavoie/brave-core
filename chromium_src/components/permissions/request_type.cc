@@ -13,8 +13,10 @@
 #endif
 
 #if defined(OS_ANDROID)
+namespace {
 constexpr auto kAndroidInfobarPermissionCookie =
     IDR_ANDROID_INFOBAR_PERMISSION_COOKIE;
+}  // namespace
 #else
 namespace vector_icons {
 constexpr auto& kMicIconValue = vector_icons::kMicIcon;

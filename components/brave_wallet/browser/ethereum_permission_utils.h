@@ -6,6 +6,7 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_WALLET_BROWSER_ETHEREUM_PERMISSION_UTILS_H_
 #define BRAVE_COMPONENTS_BRAVE_WALLET_BROWSER_ETHEREUM_PERMISSION_UTILS_H_
 
+#include <queue>
 #include <string>
 #include <vector>
 
@@ -25,18 +26,28 @@ bool GetConcatOriginFromWalletAddresses(
     GURL* new_origin);
 
 /**
+ * Parse the overwritten requesting origins from ethereum permission
+ * sub-requests, validate its format and extract original requesting_origin
+ * and account address of one sub-request.
+ * Ex: Given input origin as https://origin0x123..., it will return
+ * https://origin as the original requesting_origin and 0x123... as the account
+ * address.
+ */
+bool ParseRequestingOriginFromSubRequest(const GURL& origin,
+                                         std::string* requesting_origin,
+                                         std::string* account);
+
+/**
  * Parse the overwritten requesting origins of ethereum permission requests,
- * validate its format and extract original requesting_origin and account
- * address of one sub-request.
- * sub_req_format: https://origin0x123... -> return https://origin as the
- * original requesting_origin and 0x123... as the account address.
- * non_sub_req_format: https://origin{addr=0x123...&addr=0x456...} -> return
- * https://origin as the original requesting_origin.
+ * validate its format and extract original requesting_origin and addresses
+ * included in the overwritten requesting origin.
+ * Ex: Given input origin as https://origin{addr=0x123...&addr=0x456...}, it
+ * will return https://origin as the original requesting_origin and
+ * {0x123, 0x456} as the address_queue.
  */
 bool ParseRequestingOrigin(const GURL& origin,
-                           bool sub_req_format,
                            std::string* requesting_origin,
-                           std::string* account);
+                           std::queue<std::string>* address_queue);
 
 /**
  * Given old_origin, adding account info to its host part and return as

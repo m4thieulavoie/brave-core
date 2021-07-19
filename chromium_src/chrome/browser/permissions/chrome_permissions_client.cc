@@ -24,8 +24,8 @@ bool ChromePermissionsClient::BraveCanBypassEmbeddingOriginCheck(
   // requesting_origin & embedding_origin are the same.
   std::string original_requesting_origin;
   if (type == ContentSettingsType::BRAVE_ETHEREUM &&
-      brave_wallet::ParseRequestingOrigin(
-          requesting_origin, true, &original_requesting_origin, nullptr) &&
+      brave_wallet::ParseRequestingOriginFromSubRequest(
+          requesting_origin, &original_requesting_origin, nullptr) &&
       GURL(original_requesting_origin) == embedding_origin) {
     return true;
   }

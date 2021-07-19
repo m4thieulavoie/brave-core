@@ -15,8 +15,6 @@ namespace brave_wallet {
 
 class BraveWalletServiceObserver : public base::CheckedObserver {
  public:
-  ~BraveWalletServiceObserver() override {}
-
   virtual void OnShowEthereumPermissionPrompt(
       int32_t tab_id,
       const std::vector<std::string>& accounts,

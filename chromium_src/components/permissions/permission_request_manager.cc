@@ -20,8 +20,8 @@ namespace {
 
 bool IsAccepted(PermissionRequest* request,
                 const std::vector<std::string>& accounts) {
-  for (auto account : accounts) {
-    if (base::EndsWith(request->GetOrigin().host(), account,
+  for (const auto& account : accounts) {
+    if (base::EndsWith(request->GetOrigin().host_piece(), account,
                        base::CompareCase::INSENSITIVE_ASCII)) {
       return true;
     }
@@ -38,10 +38,10 @@ bool PermissionRequestManager::ShouldGroupRequests(PermissionRequest* a,
   std::string origin_b;
   if (a->GetRequestType() == RequestType::kBraveEthereum &&
       b->GetRequestType() == RequestType::kBraveEthereum &&
-      brave_wallet::ParseRequestingOrigin(a->GetOrigin(), true, &origin_a,
-                                          nullptr) &&
-      brave_wallet::ParseRequestingOrigin(b->GetOrigin(), true, &origin_b,
-                                          nullptr) &&
+      brave_wallet::ParseRequestingOriginFromSubRequest(a->GetOrigin(),
+                                                        &origin_a, nullptr) &&
+      brave_wallet::ParseRequestingOriginFromSubRequest(b->GetOrigin(),
+                                                        &origin_b, nullptr) &&
       origin_a == origin_b) {
     return true;
   }
@@ -51,15 +51,13 @@ bool PermissionRequestManager::ShouldGroupRequests(PermissionRequest* a,
 
 void PermissionRequestManager::AcceptEthereumPermissionRequests(
     const std::vector<std::string>& accounts) {
-  std::vector<PermissionRequest*>::iterator requests_iter;
-  for (requests_iter = requests_.begin(); requests_iter != requests_.end();
-       requests_iter++) {
-    DCHECK((*requests_iter)->GetRequestType() == RequestType::kBraveEthereum);
-    if (IsAccepted(*requests_iter, accounts)) {
-      PermissionGrantedIncludingDuplicates(*requests_iter,
+  for (PermissionRequest* request : requests_) {
+    DCHECK(request->GetRequestType() == RequestType::kBraveEthereum);
+    if (IsAccepted(request, accounts)) {
+      PermissionGrantedIncludingDuplicates(request,
                                            /*is_one_time=*/false);
     } else {
-      CancelledIncludingDuplicates(*requests_iter);
+      CancelledIncludingDuplicates(request);
     }
   }
 
@@ -71,10 +69,8 @@ void PermissionRequestManager::AcceptEthereumPermissionRequests(
 }
 
 void PermissionRequestManager::IgnoreEthereumPermissionRequests() {
-  std::vector<PermissionRequest*>::iterator requests_iter;
-  for (requests_iter = requests_.begin(); requests_iter != requests_.end();
-       requests_iter++) {
-    CancelledIncludingDuplicates(*requests_iter);
+  for (PermissionRequest* request : requests_) {
+    CancelledIncludingDuplicates(request);
   }
   FinalizeCurrentRequests(PermissionAction::DISMISSED);
 }

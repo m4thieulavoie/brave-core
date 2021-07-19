@@ -36,8 +36,6 @@ namespace permissions {
 
 class PermissionContextBase : public PermissionContextBase_ChromiumImpl {
  public:
-  using PermissionContextBase_ChromiumImpl::PermissionContextBase_ChromiumImpl;
-
   PermissionContextBase(
       content::BrowserContext* browser_context,
       ContentSettingsType content_settings_type,
@@ -90,7 +88,7 @@ class PermissionContextBase : public PermissionContextBase_ChromiumImpl {
                          bool is_one_time) override;
   void CleanUpRequest(const PermissionRequestID& id) override;
 
-  std::unordered_map<std::string, std::unique_ptr<EthereumPermissionRequests>>
+  std::map<std::string, std::unique_ptr<EthereumPermissionRequests>>
       ethereum_pending_requests_;
 };
 

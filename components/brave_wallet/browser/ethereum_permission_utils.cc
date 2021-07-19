@@ -5,12 +5,15 @@
 
 #include "brave/components/brave_wallet/browser/ethereum_permission_utils.h"
 
+#include "base/no_destructor.h"
 #include "base/strings/strcat.h"
 #include "base/strings/string_util.h"
 #include "third_party/re2/src/re2/re2.h"
 #include "url/gurl.h"
 
 namespace {
+
+constexpr char kAddrPattern[] = "addr%3D(0x[[:xdigit:]]{40})";
 
 bool AddAccountToHost(const GURL& old_origin,
                       const std::string& account,
@@ -26,33 +29,25 @@ bool AddAccountToHost(const GURL& old_origin,
   return new_origin->is_valid();
 }
 
-}  // namespace
+void ExtractAddresses(const GURL& origin,
+                      std::queue<std::string>* address_queue) {
+  static const base::NoDestructor<re2::RE2> kAddrRegex(kAddrPattern);
+  DCHECK(origin.is_valid() && address_queue);
+  DCHECK_EQ(origin, origin.GetOrigin());
 
-namespace brave_wallet {
-
-bool GetConcatOriginFromWalletAddresses(
-    const GURL& old_origin,
-    const std::vector<std::string>& addresses,
-    GURL* new_origin) {
-  if (!old_origin.is_valid() || addresses.empty()) {
-    return false;
+  re2::StringPiece input(origin.spec());
+  std::string match;
+  while (re2::RE2::FindAndConsume(&input, *kAddrRegex, &match)) {
+    address_queue->push(match);
   }
-
-  std::string addresses_suffix = "{";
-  for (auto address : addresses) {
-    addresses_suffix += "addr=" + address + "&";
-  }
-  addresses_suffix.pop_back();  // trailing &
-  addresses_suffix += "}";
-
-  return AddAccountToHost(old_origin, addresses_suffix, new_origin);
 }
 
-bool ParseRequestingOrigin(const GURL& origin,
-                           bool sub_req_format,
-                           std::string* requesting_origin,
-                           std::string* account) {
-  if (!origin.is_valid())
+bool ParseRequestingOriginInternal(const GURL& origin,
+                                   bool sub_req_format,
+                                   std::string* requesting_origin,
+                                   std::string* account,
+                                   std::queue<std::string>* address_queue) {
+  if (!origin.is_valid() || origin != origin.GetOrigin())
     return false;
 
   std::string scheme_host_group;
@@ -71,14 +66,58 @@ bool ParseRequestingOrigin(const GURL& origin,
   }
 
   if (requesting_origin) {
-    *requesting_origin = scheme_host_group + port_group;
+    *requesting_origin = base::StrCat({scheme_host_group, port_group});
   }
 
   if (sub_req_format && account) {
     *account = address_group;
   }
 
+  if (!sub_req_format && address_queue) {
+    ExtractAddresses(origin, address_queue);
+  }
+
   return true;
+}
+
+}  // namespace
+
+namespace brave_wallet {
+
+bool GetConcatOriginFromWalletAddresses(
+    const GURL& old_origin,
+    const std::vector<std::string>& addresses,
+    GURL* new_origin) {
+  if (!old_origin.is_valid() || addresses.empty()) {
+    return false;
+  }
+
+  std::string addresses_suffix = "{";
+  for (const auto& address : addresses) {
+    base::StrAppend(&addresses_suffix, {"addr=", address, "&"});
+  }
+  addresses_suffix.pop_back();  // trailing &
+  addresses_suffix += "}";
+
+  return AddAccountToHost(old_origin, addresses_suffix, new_origin);
+}
+
+bool ParseRequestingOriginFromSubRequest(const GURL& origin,
+                                         std::string* requesting_origin,
+                                         std::string* account) {
+  return ParseRequestingOriginInternal(origin, true /* sub_req_format */,
+                                       requesting_origin, account,
+                                       nullptr /* address_queue */);
+}
+
+bool ParseRequestingOrigin(const GURL& origin,
+                           std::string* requesting_origin,
+                           std::queue<std::string>* address_queue) {
+  if (address_queue && !address_queue->empty())
+    return false;
+  return ParseRequestingOriginInternal(origin, false /* sub_req_format */,
+                                       requesting_origin, nullptr /* account */,
+                                       address_queue);
 }
 
 bool GetSubRequestOrigin(const GURL& old_origin,

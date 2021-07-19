@@ -124,9 +124,8 @@ void WalletButton::ShowWalletPermissionBubble(
   std::string requesting_origin;
   for (auto* request : delegate->Requests()) {
     std::string account;
-    if (!brave_wallet::ParseRequestingOrigin(request->GetOrigin(),
-                                             true /* sub_req_format */,
-                                             &requesting_origin, &account)) {
+    if (!brave_wallet::ParseRequestingOriginFromSubRequest(
+            request->GetOrigin(), &requesting_origin, &account)) {
       continue;
     }
     accounts.push_back(account);

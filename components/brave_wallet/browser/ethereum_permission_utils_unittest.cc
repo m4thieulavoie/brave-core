@@ -42,58 +42,83 @@ TEST(EthereumPermissionUtilsUnitTest, GetConcatOriginFromWalletAddresses) {
   EXPECT_EQ(out_origin, expected_out_origin);
 }
 
-TEST(EthereumPermissionUtilsUnitTest, ParseRequestingOrigin) {
+TEST(EthereumPermissionUtilsUnitTest, ParseRequestingOriginFromSubRequest) {
   // Invalid requesting_origin format:
-  EXPECT_FALSE(ParseRequestingOrigin(GURL("https://test.com0x123"), true,
-                                     nullptr, nullptr));
-  EXPECT_FALSE(ParseRequestingOrigin(GURL("https://test.com0x123"), false,
-                                     nullptr, nullptr));
-  EXPECT_FALSE(ParseRequestingOrigin(GURL(""), true, nullptr, nullptr));
-  EXPECT_FALSE(ParseRequestingOrigin(GURL(""), false, nullptr, nullptr));
+  EXPECT_FALSE(ParseRequestingOriginFromSubRequest(
+      GURL("https://test.com0x123"), nullptr, nullptr));
+  EXPECT_FALSE(ParseRequestingOriginFromSubRequest(
+      GURL("https://test.com0x123/path"), nullptr, nullptr));
+  EXPECT_FALSE(ParseRequestingOriginFromSubRequest(GURL(""), nullptr, nullptr));
 
-  // Sub-req format:
   std::string requesting_origin;
   std::string account;
-  EXPECT_TRUE(ParseRequestingOrigin(
-      GURL("https://test.com0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8A"), true,
+  EXPECT_TRUE(ParseRequestingOriginFromSubRequest(
+      GURL("https://test.com0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8A"),
       &requesting_origin, &account));
   EXPECT_EQ(requesting_origin, "https://test.com");
   EXPECT_TRUE(base::EqualsCaseInsensitiveASCII(
       account, "0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8A"));
-  EXPECT_TRUE(ParseRequestingOrigin(
+  EXPECT_TRUE(ParseRequestingOriginFromSubRequest(
       GURL("https://test.com0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8A:123"),
-      true, &requesting_origin, &account));
+      &requesting_origin, &account));
   EXPECT_EQ(requesting_origin, "https://test.com:123");
   EXPECT_TRUE(base::EqualsCaseInsensitiveASCII(
       account, "0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8A"));
+}
 
-  // Non-sub-req format:
-  requesting_origin = "";
+TEST(EthereumPermissionUtilsUnitTest, ParseRequestingOrigin) {
+  // Invalid requesting_origin format:
+  EXPECT_FALSE(
+      ParseRequestingOrigin(GURL("https://test.com0x123"), nullptr, nullptr));
+  EXPECT_FALSE(ParseRequestingOrigin(GURL("https://test.com0x123/path"),
+                                     nullptr, nullptr));
+  EXPECT_FALSE(ParseRequestingOrigin(GURL(""), nullptr, nullptr));
+
+  std::queue<std::string> address_queue;
+
+  // Origin without port:
+  std::string requesting_origin;
   EXPECT_TRUE(ParseRequestingOrigin(
       GURL("https://test.com{addr=0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8A}"),
-      false, &requesting_origin, nullptr));
+      &requesting_origin, &address_queue));
   EXPECT_EQ(requesting_origin, "https://test.com");
+  EXPECT_EQ(address_queue.size(), 1u);
+  EXPECT_TRUE(base::EqualsCaseInsensitiveASCII(
+      address_queue.front(), "0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8A"));
 
   EXPECT_TRUE(ParseRequestingOrigin(
       GURL("https://"
            "test.com{addr=0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8A&addr="
            "0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8B}"),
-      false, &requesting_origin, nullptr));
+      &requesting_origin, nullptr));
   EXPECT_EQ(requesting_origin, "https://test.com");
 
-  // Non-sub-req format with port:
+  // Origin with port:
   EXPECT_TRUE(ParseRequestingOrigin(
       GURL("https://"
            "test.com{addr=0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8A}:123"),
-      false, &requesting_origin, nullptr));
+      &requesting_origin, nullptr));
   EXPECT_EQ(requesting_origin, "https://test.com:123");
 
+  EXPECT_FALSE(ParseRequestingOrigin(
+      GURL("https://"
+           "test.com{addr=0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8A&addr="
+           "0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8B}:123"),
+      &requesting_origin, &address_queue))
+      << "Non-empty address_queue param should return false";
+  address_queue = std::queue<std::string>();
   EXPECT_TRUE(ParseRequestingOrigin(
       GURL("https://"
            "test.com{addr=0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8A&addr="
            "0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8B}:123"),
-      false, &requesting_origin, nullptr));
+      &requesting_origin, &address_queue));
   EXPECT_EQ(requesting_origin, "https://test.com:123");
+  EXPECT_EQ(address_queue.size(), 2u);
+  EXPECT_TRUE(base::EqualsCaseInsensitiveASCII(
+      address_queue.front(), "0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8A"));
+  address_queue.pop();
+  EXPECT_TRUE(base::EqualsCaseInsensitiveASCII(
+      address_queue.front(), "0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8B"));
 }
 
 TEST(EthereumPermissionUtilsUnitTest, GetSubRequestOrigin) {
