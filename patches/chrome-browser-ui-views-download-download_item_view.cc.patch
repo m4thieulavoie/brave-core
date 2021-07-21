@@ -1,0 +1,12 @@
+diff --git a/chrome/browser/ui/views/download/download_item_view.cc b/chrome/browser/ui/views/download/download_item_view.cc
+index 9eabb1f2ff464b9d277e68830cb762211deb6a6d..865f6c3ce3d2cc260d7fa01818ea082602164321 100644
+--- a/chrome/browser/ui/views/download/download_item_view.cc
++++ b/chrome/browser/ui/views/download/download_item_view.cc
+@@ -175,6 +175,7 @@ class TransparentButton : public views::Button {
+   std::u16string GetTooltipText(const gfx::Point& point) const override {
+     return parent()->GetTooltipText(point);
+   }
++  BRAVE_BROWSER_UI_VIEWS_DOWNLOAD_DOWNLOAD_ITEM_VIEW_TRANSPARENT_BTN
+ };
+ 
+ BEGIN_METADATA(TransparentButton, views::Button)
