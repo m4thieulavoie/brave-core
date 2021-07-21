@@ -29,6 +29,7 @@
 #include "content/public/browser/web_contents.h"
 #include "content/public/test/browser_test.h"
 #include "content/public/test/browser_test_utils.h"
+#include "content/public/test/test_utils.h"
 #include "net/dns/mock_host_resolver.h"
 #include "net/test/embedded_test_server/embedded_test_server.h"
 #include "url/gurl.h"
@@ -219,6 +220,62 @@ IN_PROC_BROWSER_TEST_F(PermissionManagerBrowserTest,
                   ContentSettingsType::BRAVE_ETHEREUM),
               expected_settings[i]);
   }
+}
+
+IN_PROC_BROWSER_TEST_F(PermissionManagerBrowserTest,
+                       RequestEthereumPermissionsTabClosed) {
+  const GURL& url = https_server()->GetURL("/empty.html");
+  ui_test_utils::NavigateToURL(browser(), url);
+
+  auto* permission_request_manager = GetPermissionRequestManager();
+  EXPECT_FALSE(permission_request_manager->IsRequestInProgress());
+  EXPECT_TRUE(IsEthereumPendingRequestsEmpty());
+
+  std::vector<std::string> addresses = {
+      "0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8C",
+      "0xaf5Ad1E10926C0Ee4af4eDAC61DD60E853753f8D"};
+  std::vector<ContentSettingsType> types(addresses.size(),
+                                         ContentSettingsType::BRAVE_ETHEREUM);
+  std::vector<GURL> sub_request_origins(addresses.size(), GURL(""));
+  for (size_t i = 0; i < addresses.size(); i++) {
+    ASSERT_TRUE(brave_wallet::GetSubRequestOrigin(
+        GetLastCommitedOrigin(), addresses[i], &sub_request_origins[i]));
+  }
+
+  GURL origin;
+  ASSERT_TRUE(brave_wallet::GetConcatOriginFromWalletAddresses(
+      GetLastCommitedOrigin(), addresses, &origin));
+
+  auto observer = std::make_unique<PermissionRequestManagerObserver>(
+      permission_request_manager);
+
+  permission_manager()->RequestPermissions(
+      types, web_contents()->GetMainFrame(), origin, true, base::DoNothing());
+
+  content::RunAllTasksUntilIdle();
+
+  EXPECT_TRUE(permission_request_manager->IsRequestInProgress());
+  EXPECT_TRUE(observer->IsShowingBubble());
+  EXPECT_FALSE(IsEthereumPendingRequestsEmpty());
+
+  // Check sub-requests are created as expected.
+  EXPECT_EQ(permission_request_manager->Requests().size(), addresses.size());
+  for (size_t i = 0; i < permission_request_manager->Requests().size(); i++) {
+    EXPECT_EQ(permission_request_manager->Requests()[i]->GetRequestType(),
+              RequestType::kBraveEthereum);
+    EXPECT_EQ(sub_request_origins[i],
+              permission_request_manager->Requests()[i]->GetOrigin());
+  }
+
+  // Close tab with active request pending.
+  content::WebContentsDestroyedWatcher tab_destroyed_watcher(web_contents());
+  browser()->tab_strip_model()->CloseWebContentsAt(0,
+                                                   TabStripModel::CLOSE_NONE);
+  tab_destroyed_watcher.Wait();
+
+  EXPECT_FALSE(permission_request_manager->IsRequestInProgress());
+  EXPECT_FALSE(observer->IsShowingBubble());
+  EXPECT_TRUE(IsEthereumPendingRequestsEmpty());
 }
 
 IN_PROC_BROWSER_TEST_F(PermissionManagerBrowserTest, GetCanonicalOrigin) {
