@@ -7,19 +7,16 @@ import * as React from 'react'
 interface Props {
   amount: number
   rate: number
+  currency?: string
 }
 
-export function getExchangeCurrency () {
-  return 'USD'
-}
-
-// TODO(zenparsing): Remove this
 export function ExchangeAmount (props: Props) {
   const exchangeAmount = props.amount * props.rate
+  const currency = props.currency || 'USD'
   return (
     <>
       <span className='amount'>{exchangeAmount.toFixed(2)}</span>&nbsp;
-      <span className='currency'>{getExchangeCurrency()}</span>
+      <span className='currency'>{currency}</span>
     </>
   )
 }

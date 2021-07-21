@@ -8,7 +8,6 @@ interface Props {
   amount: number
 }
 
-// TODO(zenparsing): Remove this
 export function TokenAmount (props: Props) {
   return (
     <>
