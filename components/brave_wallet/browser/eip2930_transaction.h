@@ -65,7 +65,7 @@ class Eip2930Transaction : public EthTransaction {
 
   uint256_t GetDataFee() const override;
 
- private:
+ protected:
   uint64_t chain_id_;
   AccessList access_list_;
 };
