@@ -11,8 +11,10 @@
       android:title="@string/search_title"
       android:icon="@drawable/ic_search"
       app:showAsAction="collapseActionView|always"
+      app:iconTint="@color/wallet_text_color"
       app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
   <item android:id="@+id/settings"
-      android:title="@string/brave_ui_settings" />
+      android:title="@string/brave_ui_settings"
+      app:iconTint="@color/wallet_text_color" />
 </menu>
