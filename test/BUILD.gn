@@ -685,7 +685,6 @@ if (!is_android) {
       "//brave/components/brave_shields/common",
       "//brave/components/debounce/browser",
       "//brave/renderer/test:browser_tests",
-      "//chrome/browser",
       "//components/security_interstitials/content:security_interstitial_page",
       "//media:test_support",
       "//testing/gmock",
