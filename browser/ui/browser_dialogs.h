@@ -11,6 +11,9 @@ class Browser;
 namespace brave {
 
 void ShowDefaultBrowserDialog(Browser* browser);
+// Returns true when permission ask dialog is launched. This dialog will launch
+// tab restore dialog after ask dialog is closed.
+bool ShowCrashReportPermissionAskDialog(Browser* browser);
 
 }  // namespace brave
 
