@@ -7,18 +7,36 @@
 
 #define PermissionRequest PermissionRequest_ChromiumImpl
 #define IsDuplicateOf IsDuplicateOf_ChromiumImpl
+
+ // Handled by an override in `WidevinePermissionRequest`.
+#define BRAVE_PERMISSION_REQUEST_GET_MESSAGE_TEXT_FRAGMENT \
+  case RequestType::kWidevine:                             \
+    NOTREACHED();                                          \
+    return std::u16string();
+
 #include "../../../../components/permissions/permission_request.cc"
+#undef BRAVE_PERMISSION_REQUEST_GET_MESSAGE_TEXT_FRAGMENT
 #undef IsDuplicateOf
 #undef PermissionRequest
 
 namespace permissions {
 
-PermissionRequest::PermissionRequest() = default;
+PermissionRequest::PermissionRequest(
+    const GURL& requesting_origin,
+    RequestType request_type,
+    bool has_gesture,
+    PermissionDecidedCallback permission_decided_callback,
+    base::OnceClosure delete_callback)
+    : PermissionRequest_ChromiumImpl(requesting_origin,
+                                     request_type,
+                                     has_gesture,
+                                     std::move(permission_decided_callback),
+                                     std::move(delete_callback)) {}
 
 PermissionRequest::~PermissionRequest() = default;
 
 bool PermissionRequest::SupportsLifetime() const {
-  return false;
+  return true;
 }
 
 void PermissionRequest::SetLifetime(absl::optional<base::TimeDelta> lifetime) {
