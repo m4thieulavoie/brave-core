@@ -2319,27 +2319,34 @@ are declared in tools/grit/grit_rule.gni.
       </message>
 
       <!-- WebApp name/icon update dialog -->
-      <message name="IDS_WEBAPP_UPDATE_DIALOG_TITLE_NAME" desc="The title at the top of the dialog when only the name changed.">
-        Review name updates
+      <message name="IDS_WEBAPP_UPDATE_DIALOG_TITLE_NAME" desc="The title at the top of the dialog when only the name changed." formatter_data="android_java">
+        Review name update
       </message>
-      <message name="IDS_WEBAPP_UPDATE_DIALOG_TITLE_ICON" desc="The title at the top of the dialog when only the icon changed.">
-        Review icon updates
+      <message name="IDS_WEBAPP_UPDATE_DIALOG_TITLE_ICON" desc="The title at the top of the dialog when only the icon changed." formatter_data="android_java">
+        Review icon update
       </message>
-      <message name="IDS_WEBAPP_UPDATE_DIALOG_TITLE_NAME_AND_ICON" desc="The title at the top of the dialog when the name and icon changed.">
+      <message name="IDS_WEBAPP_UPDATE_DIALOG_TITLE_NAME_AND_ICON" desc="The title at the top of the dialog when the name and icon changed." formatter_data="android_java">
         Review name &amp; icon updates
       </message>
-      <message name="IDS_WEBAPP_UPDATE_EXPLANATION" desc="The text at the top of the dialog, explaining what to do when an app changes its identity.">
-        If this web app is trying to trick you into thinking it is a different app, uninstall it.
+      <message name="IDS_WEBAPP_UPDATE_EXPLANATION" desc="The text at the top of the dialog, explaining what to do when an app changes its identity." formatter_data="android_java">
+        If this web app is trying to trick you into thinking it's a different app, uninstall it.
       </message>
-      <message name="IDS_WEBAPP_UPDATE_NEGATIVE_BUTTON" desc="The text for the negative button (aka. cancel button), allowing the user to uninstall the app and report it to the abuse team.">
-        Uninstall app
-      </message>
-      <message name="IDS_UPDATE_WEBAPP_CURRENT_ICON" desc="The accessibility string explaining which icon is the current icon.">
+      <message name="IDS_WEBAPP_UPDATE_CURRENT_ICON" desc="The accessibility string explaining which icon is the current icon." formatter_data="android_java">
         Current icon
       </message>
-      <message name="IDS_UPDATE_WEBAPP_UPDATED_ICON" desc="The accessibility string explaining which icon is the new icon.">
+      <message name="IDS_WEBAPP_UPDATE_NEW_ICON" desc="The accessibility string explaining which icon is the new icon." formatter_data="android_java">
         New icon
       </message>
+      <if expr="not use_titlecase">
+        <message name="IDS_WEBAPP_UPDATE_NEGATIVE_BUTTON" desc="The text for the negative button (aka. cancel button), allowing the user to uninstall the app and report it to the abuse team (sentence casing)." formatter_data="android_java">
+          Uninstall app
+        </message>
+      </if>
+      <if expr="use_titlecase">
+        <message name="IDS_WEBAPP_UPDATE_NEGATIVE_BUTTON" desc="The text for the negative button (aka. cancel button), allowing the user to uninstall the app and report it to the abuse team (title casing).">
+          Uninstall App
+        </message>
+      </if>
 
       <!-- Finish policy app installation dialog -->
       <message name="IDS_FINISH_POLICY_WEB_APP_INSTALLATION" desc="Main text for the Finish Policy Web App Installation dialog. This is a dialog message that appears on the first launch of an app after it was remotely installed by an enterprise administrator. The app has some cosmetic factors (like the app icon) that can only be fixed if the user launches and then restarts the app. After the initial launch, this dialog encourages users to restart the app to complete the installation.">
@@ -3344,8 +3351,8 @@ are declared in tools/grit/grit_rule.gni.
       <message name="IDS_TAB_SHARING_INFOBAR_STOP_BUTTON" desc="Text displayed on the button to stop sharing a tab.">
        Stop sharing
       </message>
-      <message name="IDS_TAB_SHARING_INFOBAR_SWITCH_TO_BUTTON" desc="The user is sharing (presenting) a tab via a screensharing app like Brave Meet. This button allows the user to continue sharing a tab but view a different tab [url] at the same time.">
-       View tab <ph name="TAB_ORIGIN">$1<ex>meet.google.com</ex></ph>
+      <message name="IDS_TAB_SHARING_INFOBAR_SWITCH_TO_BUTTON" desc="The user is sharing (presenting) a tab via a screensharing app like Brave Meet. This button allows the user to continue sharing a tab but view a different tab [url] at the same time. The URL should not appear in the middle of the button in any language; please observe the structure of [message: url].">
+       View tab: <ph name="TAB_ORIGIN">$1<ex>meet.google.com</ex></ph>
       </message>
       <message name="IDS_TAB_SHARING_INFOBAR_SWITCH_TO_CAPTURER_BUTTON" desc="Text displayed on an infobar button offering to change focus to the capturer if its hostname cannot be determined. (Otherwise, IDS_TAB_SHARING_INFOBAR_SWITCH_TO_BUTTON will be used.)">
        Switch to capturing tab
@@ -3867,7 +3874,7 @@ are declared in tools/grit/grit_rule.gni.
       </message>
 
       <message name="IDS_EXTENSION_PERMISSION_LINE" desc="Template for item in list of privileges that an extension or app has">
-          • <ph name="PERMISSION">$1<ex>Read and change all your data on the websites you visit</ex></ph>
+          • <ph name="PERMISSION">$1<ex>Read and change all your data on all websites</ex></ph>
       </message>
       <message name="IDS_EXTENSION_RATING_COUNT" desc="Number of ratings an app or extensions has (displayed after star icons)">
         (<ph name="RATING_COUNT">$1<ex>46</ex></ph>)
@@ -3900,16 +3907,16 @@ are declared in tools/grit/grit_rule.gni.
 
       <if expr="enable_extensions">
         <message name="IDS_EXTENSION_PROMPT_WARNING_FULL_ACCESS" desc="Permission string for full access to the computer and all websites.">
-          Read and change all your data on your computer and the websites you visit
+          Read and change all your data on your computer and all websites
         </message>
         <message name="IDS_EXTENSION_PROMPT_WARNING_ALL_HOSTS" desc="Permission string for access to data on all websites.">
-          Read and change all your data on the websites you visit
+          Read and change all your data on all websites
         </message>
         <message name="IDS_EXTENSION_PROMPT_WARNING_CURRENT_HOST" desc="Permission string for access to data on current website.">
           Read and change all your data on the current website when invoked
         </message>
         <message name="IDS_EXTENSION_PROMPT_WARNING_ALL_HOSTS_READ_ONLY" desc="Permission string for read-only access to data on all websites.">
-          Read all your data on the websites you visit
+          Read all your data on all websites
         </message>
         <message name="IDS_EXTENSION_PROMPT_WARNING_AUDIO_CAPTURE" desc="Permission string for access to audio capture devices.">
           Use your microphone
@@ -3951,7 +3958,7 @@ are declared in tools/grit/grit_rule.gni.
           Block parts of web pages
         </message>
         <message name="IDS_EXTENSION_PROMPT_WARNING_DECLARATIVE_NET_REQUEST" desc="Permission string for Declarative Net Request API.">
-          Block content on any page you visit
+          Block content on any page
         </message>
         <message name="IDS_EXTENSION_PROMPT_WARNING_DOCUMENT_SCAN" desc="Permission string for access to document scanning.">
           Access document scanners attached via USB or on the local network
@@ -5847,12 +5854,22 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
 
       <!-- Read Later context menu -->
-      <message name="IDS_READ_LATER_CONTEXT_MENU_MARK_AS_UNREAD" desc="Label for context menu item to a read later entry as unread.">
-        Mark as unread
-      </message>
-      <message name="IDS_READ_LATER_CONTEXT_MENU_MARK_AS_READ" desc="Label for context menu item to a read later entry as read.">
-        Mark as read
-      </message>
+      <if expr="use_titlecase">
+        <message name="IDS_READ_LATER_CONTEXT_MENU_MARK_AS_UNREAD" desc="Label for context menu item to a read later entry as unread. (In title case.)">
+          Mark as Unread
+        </message>
+        <message name="IDS_READ_LATER_CONTEXT_MENU_MARK_AS_READ" desc="Label for context menu item to a read later entry as read. (In title case.)">
+          Mark as Read
+        </message>
+      </if>
+      <if expr="not use_titlecase">
+        <message name="IDS_READ_LATER_CONTEXT_MENU_MARK_AS_UNREAD" desc="Label for context menu item to a read later entry as unread.">
+          Mark as unread
+        </message>
+        <message name="IDS_READ_LATER_CONTEXT_MENU_MARK_AS_READ" desc="Label for context menu item to a read later entry as read.">
+          Mark as read
+        </message>
+      </if>
       <message name="IDS_READ_LATER_CONTEXT_MENU_DELETE" desc="Label for context menu item to a delete a read later entry.">
         Delete
       </message>
@@ -6133,6 +6150,9 @@ Keep your key file in a safe place. You will need it to create new versions of y
       </message>
       <message name="IDS_TAB_GROUPS_NEW_GROUP_PROMO" desc="Text shown on promotional UI encouraging users to create a tab group in their tab strip">
         To group tabs together, right-click a tab
+      </message>
+      <message name="IDS_TAB_GROUPS_UNNAMED_GROUP_TOOLTIP" desc="Static tooltip to display on hover over unnamed tab group.">
+        Unnamed Tab Group
       </message>
       <if expr="use_titlecase">
         <message name="IDS_PROMO_DISMISS_BUTTON" desc="Text shown on the button for the user to acknowledge that they understand the message">
@@ -8371,14 +8391,6 @@ Please help our engineers fix this problem. Tell us what happened right before y
         Failed To Create Data Directory
       </message>
 
-      <!-- Multiple download warning-->
-      <message name="IDS_MULTI_DOWNLOAD_WARNING" desc="Warning invoked if multiple downloads are attempted without user interaction.">
-        <ph name="ORIGIN">$1<ex>https://backgroundfetch.com</ex></ph> wants to download multiple files
-      </message>
-      <message name="IDS_MULTI_DOWNLOAD_PERMISSION_FRAGMENT" desc="Permission request shown if multiple downloads are attempted without user interaction and there are multiple permissions requested. Follows a prompt: 'This site would like to:'">
-        Download multiple files
-      </message>
-
       <if expr="use_titlecase">
         <message name="IDS_RECENT_TABS_MENU" desc="In Title Case: The title of the Recent Tabs menu in the wrench menu.">
           Recent Tabs
@@ -8968,9 +8980,6 @@ Please help our engineers fix this problem. Tell us what happened right before y
         </message>
         <message name="IDS_NEW_INCOGNITO_WINDOW_MAC" desc="The Mac menu item for opening a new Private window in the file menu.">
           New Private Window
-        </message>
-        <message name="IDS_BACKGROUND_APPS_MAC" desc="The Mac submenu for opening Background Apps.">
-          Background Apps
         </message>
         <message name="IDS_REOPEN_CLOSED_TABS_MAC" desc="The Mac menu item reopen recently closed tabs in the file menu.">
           Reopen Closed Tab
@@ -10509,9 +10518,6 @@ Please help our engineers fix this problem. Tell us what happened right before y
     </message>
 
     <!-- Security Key permission -->
-    <message name="IDS_SECURITY_KEY_ATTESTATION_PERMISSION_FRAGMENT" desc="A permission prompt shown to a user when a website wants to see information that identifies the user's Security Key, such as make and model number. The text '[website URL] wants to:' precedes this string. The 'make' of a device is the brand name of the manufacturer, e.g. Yubikey is a make of Security Key. The 'model' of a device is the specific product, e.g. Yubikey Neo is a model of Security Key.">
-      See the make and model of your Security Key
-    </message>
     <if expr="is_android">
       <message name="IDS_SECURITY_KEY_ATTESTATION_INFOBAR_QUESTION" desc="An infobar prompt shown to a user when a website wants to see information that identifies the user's Security Key, such as make and model number. The 'make' of a device is the brand name of the manufacturer, e.g. Yubikey is a make of Security Key. The 'model' of a device is the specific product, e.g. Yubikey Neo is a model of Security Key.">
         <ph name="URL">
@@ -11168,8 +11174,22 @@ Please help our engineers fix this problem. Tell us what happened right before y
       Google Drive
     </message>
 
+    <!-- Enterprise file system connector sign in from settings page confirmation dialog -->
+    <message name="IDS_FILE_SYSTEM_CONNECTOR_SIGNIN_CONFIRM_TITLE" desc="Title shown in modal shown upon clicking sign in for downloads connection on settings page, before sign in dialog">
+      Storing <ph name="WEB_DRIVE">$1<ex>Google Drive</ex></ph> Authentication Token
+    </message>
+    <message name="IDS_FILE_SYSTEM_CONNECTOR_SIGNIN_CONFIRM_MESSAGE" desc="Meesage shown in above-mentioned modal">
+      Upon signing in, an unique authentication token will be stored and used for all future eligible downloads.
+    </message>
+    <message name="IDS_FILE_SYSTEM_CONNECTOR_SIGNIN_CONFIRM_CANCEL_BUTTON" desc="Text displayed for cancel button in above-mentioned modal">
+      Cancel
+    </message>
+    <message name="IDS_FILE_SYSTEM_CONNECTOR_SIGNIN_CONFIRM_ACCEPT_BUTTON" desc="Text displayed for accept button in above-mentioned modal">
+      Continue
+    </message>
+
     <!-- Enterprise file system connector sign in on first download confirmation dialog -->
-    <message name="IDS_FILE_SYSTEM_CONNECTOR_SIGNIN_REQUIRED_TITLE" desc="Title shown in modal shown upon first eligible download to be uploaded, before sign in dia;pg">
+    <message name="IDS_FILE_SYSTEM_CONNECTOR_SIGNIN_REQUIRED_TITLE" desc="Title shown in modal shown upon first eligible download to be uploaded, before sign in dialog">
       Sign into <ph name="WEB_DRIVE">$1<ex>Google Drive</ex></ph> to complete download
     </message>
     <message name="IDS_FILE_SYSTEM_CONNECTOR_SIGNIN_REQUIRED_MESSAGE" desc="Meesage shown in above-mentioned modal">
@@ -11349,6 +11369,15 @@ Please help our engineers fix this problem. Tell us what happened right before y
     <message name="IDS_TAB_SEARCH_EXPERIMENT_DESCRIPTION" desc="Description for Tab Search experiment">
       Enable a popup bubble in Top Brave UI to search over currently open tabs.
     </message>
+
+    <if expr="is_cfm">
+      <message name="IDS_CFM_NETWORK_SETTINGS_TITLE" desc="Title for CFM Network Settings dialog">
+        Network Settings
+      </message>
+      <message name="IDS_CFM_NETWORK_SETTINGS_AVAILABLE_NETWORKS" desc="Subheader displayed above list of discovered and available WiFi networks">
+        Available WiFi networks
+      </message>
+    </if>
   </messages>
 </release>
 </grit>
