@@ -9,7 +9,7 @@ import {CrSearchFieldBehavior} from 'chrome://resources/cr_elements/cr_search_fi
 Polymer({
   is: 'br-toolbar-search-field',
 
-  _template: html`{__html_template__}`
+  _template: html`{__html_template__}`,
 
   behaviors: [CrSearchFieldBehavior],
 
