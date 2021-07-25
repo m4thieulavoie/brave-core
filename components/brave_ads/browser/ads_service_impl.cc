@@ -1442,7 +1442,8 @@ bool AdsServiceImpl::MigratePrefs(const int source_version,
       {{6, 7}, &AdsServiceImpl::MigratePrefsVersion6To7},
       {{7, 8}, &AdsServiceImpl::MigratePrefsVersion7To8},
       {{8, 9}, &AdsServiceImpl::MigratePrefsVersion8To9},
-      {{9, 10}, &AdsServiceImpl::MigratePrefsVersion9To10}};
+      {{9, 10}, &AdsServiceImpl::MigratePrefsVersion9To10},
+      {{10, 11}, &AdsServiceImpl::MigratePrefsVersion10To11}};
 
   // Cycle through migration paths, i.e. if upgrading from version 2 to 5 we
   // should migrate version 2 to 3, then 3 to 4 and finally version 4 to 5
@@ -1662,7 +1663,14 @@ void AdsServiceImpl::MigratePrefsVersion9To10() {
     return;
   }
 
-  SetInt64Pref(ads::prefs::kAdsPerHour, -1);
+  profile_->GetPrefs()->ClearPref(ads::prefs::kAdsPerHour);
+}
+
+void AdsServiceImpl::MigratePrefsVersion10To11() {
+  const int64_t ads_per_hour = GetInt64Pref(ads::prefs::kAdsPerHour);
+  if (ads_per_hour == 0) {
+    profile_->GetPrefs()->ClearPref(ads::prefs::kAdsPerHour);
+  }
 }
 
 bool AdsServiceImpl::IsUpgradingFromPreBraveAdsBuild() {
